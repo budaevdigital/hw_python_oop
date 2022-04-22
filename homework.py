@@ -92,50 +92,51 @@ class CashCalculator(Calculator):
     def __init__(self, limit):
         super().__init__(limit)
 
-    def get_today_cash_remained(self, currency=None) -> str:
-        currency = currency.lower()
-        if currency is None:
-            currency = 'rub'
+    def get_today_cash_remained(self, currency: str = None) -> str:
+        self.currency = currency
+        if self.currency is None:
+            self.currency = 'rub'
 
         spending_today = Calculator.get_today_stats(self)
 
         cash_left_today = self.limit - spending_today
+        print(cash_left_today)
 
-        if self.limit == int(spending_today) or cash_left_today == 0:
-            result = 'Денег нет, держись'
+        if cash_left_today == 0:
+            return 'Денег нет, держись'
 
-        elif self.limit > spending_today and cash_left_today > 0:
+        elif cash_left_today > 0:
             if currency == 'usd':
-                cash_left_today = cash_left_today / self.USD_RATE
-                result = f'На сегодня осталось {cash_left_today:.2f} USD'
+                cash_left_today /= self.USD_RATE
+                return f'На сегодня осталось {cash_left_today:.2f} USD'
             elif currency == 'eur':
-                cash_left_today = cash_left_today / self.EURO_RATE
-                result = f'На сегодня осталось {cash_left_today:.2f} Euro'
-            elif currency == 'rub':
-                result = f'На сегодня осталось {cash_left_today:.2f} Руб'
+                cash_left_today /= self.EURO_RATE
+                return f'На сегодня осталось {cash_left_today:.2f} Euro'
+            else:
+                cash_left_today /= 1
+                return f'На сегодня осталось {cash_left_today:.2f} руб'
 
-        elif self.limit < spending_today or cash_left_today < 0:
+        else:
             if currency == 'usd':
-                cash_left_today = cash_left_today / self.USD_RATE
-                result = (f'Денег нет, держись: твой долг '
-                          f'- {abs(cash_left_today):.2f} USD')
+                cash_left_today /= self.USD_RATE
+                return (f'Денег нет, держись: твой долг '
+                        f'- {abs(cash_left_today):.2f} USD')
             elif currency == 'eur':
-                cash_left_today = cash_left_today / self.EURO_RATE
-                result = (f'Денег нет, держись: твой долг '
-                          f'- {abs(cash_left_today):.2f} Euro')
-            elif currency == 'rub':
-                result = (f'Денег нет, держись: твой долг '
-                          f'- {abs(cash_left_today):.2f} Руб')
-
-        return result
+                cash_left_today /= self.EURO_RATE
+                return (f'Денег нет, держись: твой долг '
+                        f'- {abs(cash_left_today):.2f} Euro')
+            else:
+                cash_left_today /= 1
+                return (f'Денег нет, держись: твой долг '
+                        f'- {abs(cash_left_today):.2f} руб')
 
     def get_today_stats(self):
         spending_today = Calculator.get_today_stats(self)
-        return f'Потрачено сегодня {spending_today:.2f} Руб'
+        return f'Потрачено сегодня {spending_today:.2f} руб'
 
     def get_week_stats(self):
         spending_week = Calculator.get_week_stats(self)
-        return f'Потрачено за неделю {spending_week:.2f} Руб'
+        return f'Потрачено за неделю {spending_week:.2f} руб'
 
 
 cash_calculator = CashCalculator(1000)
