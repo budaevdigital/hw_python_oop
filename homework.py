@@ -48,6 +48,7 @@ class Record:
             self.date = (dt.datetime.strptime(date, FORMAT)).date()
         else:
             self.date = date
+            
         # if date is None:
         #     self.date = (dt.datetime.now()).date()
         # else:
