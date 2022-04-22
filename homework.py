@@ -44,11 +44,10 @@ class Record:
                  date: str = (dt.datetime.now()).date()):
         self.amount = amount
         self.comment = comment
-        if date is str:
+        if type(date) is str:
             self.date = (dt.datetime.strptime(date, FORMAT)).date()
         else:
             self.date = date
-            
         # if date is None:
         #     self.date = (dt.datetime.now()).date()
         # else:
@@ -102,9 +101,7 @@ class CashCalculator(Calculator):
 
         spending_today = Calculator.get_today_stats(self)
 
-        print(spending_today)
         cash_left_today = self.limit - spending_today
-        print(type(cash_left_today))
 
         if self.limit == int(spending_today):
             return 'Денег нет, держись'
